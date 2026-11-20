@@ -5,7 +5,7 @@
 - Silver: required-field validation, type conversion, invalid-row rejection, duplicate removal.
 - Gold: behavioral indicators, Isolation Forest support signal, risk score and explanation.
 - Pipeline observability: batch ID, input/valid/rejected/duplicate/flagged counts and run history.
-- Dark dashboard with 10-second refresh, CSV upload, search, risk distribution and export.
+- Professional animated landing page with separate Home, Dashboard, Data Pipeline, Automation, Transactions and Risk Analytics pages. Dashboard charts are drawn in-browser and refresh every 10 seconds. CSV upload triggers the full pipeline automatically, with searchable records, run history and CSV export.
 
 ## Stack
 Python, FastAPI, Pandas, scikit-learn Isolation Forest, SQLite, HTML/CSS/JavaScript, Render.
@@ -42,3 +42,10 @@ Push this folder to GitHub. In Render choose New > Blueprint and connect the rep
 
 ## Limitations
 Scores are explainable risk indicators, not calibrated fraud probabilities. Decisions are simulated. Sample data is synthetic. Customer baselines are calculated within each uploaded batch for this educational demonstration. It is not connected to a payment network or production bank data.
+
+## Updated interface
+- Home is a professional service/intro page with animated gradient/grid/orbit visuals and clickable service cards.
+- Every workspace option opens as its own page (not a long single scrolling dashboard).
+- Dashboard and Risk Analytics include visual charts rendered in JavaScript.
+- Automation page explains and surfaces automated validation, deduplication, scoring, storage and refresh steps.
+- Current automation is triggered by CSV upload; scheduled jobs, folder watching and continuous streaming are not implemented.
