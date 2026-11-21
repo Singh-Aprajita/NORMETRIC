@@ -3,3 +3,5 @@ uvicorn[standard]==0.34.2
 pandas==2.2.3
 scikit-learn==1.6.1
 python-multipart==0.0.20
+google-genai
+python-dotenv
