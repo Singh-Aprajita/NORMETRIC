@@ -3,3 +3,6 @@ __pycache__/
 data/
 .env
 .pytest_cache/
+.env.*
+!.env.example
+*.pyc
