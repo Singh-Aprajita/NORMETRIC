@@ -1,19 +1,30 @@
 
-import json
 from datetime import datetime
+from sqlalchemy import func
+from sqlalchemy.dialects.postgresql import insert
 
 from .connection import SessionLocal
 from .models import Transaction, PipelineRun
 
 
-def save_pipeline_results(batch, source, input_rows,
-                          valid_rows, rejected_rows,
-                          duplicates, flagged, rows):
+# --------------------------------
+# Save ETL results to PostgreSQL
+# --------------------------------
 
+def save_pipeline_results(
+    batch,
+    source,
+    input_rows,
+    valid_rows,
+    rejected_rows,
+    duplicates,
+    flagged,
+    rows
+):
     session = SessionLocal()
 
     try:
-        # Save pipeline execution details
+        # Record every pipeline execution
         run = PipelineRun(
             batch_id=batch,
             source=source,
@@ -25,9 +36,11 @@ def save_pipeline_results(batch, source, input_rows,
             status="SUCCESS"
         )
 
-        session.merge(run)
+        session.add(run)
 
-        # Save processed transactions
+        # Prepare transaction records
+        records = []
+
         for row in rows:
             timestamp = None
 
@@ -36,21 +49,29 @@ def save_pipeline_results(batch, source, input_rows,
                     row[4].replace("Z", "+00:00")
                 )
 
-            transaction = Transaction(
-                transaction_id=row[0],
-                customer_id=row[1],
-                amount=row[2],
-                city=row[3],
-                timestamp=timestamp,
-                risk_score=row[5],
-                risk_level=row[6],
-                reasons=row[7],
-                decision=row[8],
-                batch_id=row[9]
+            records.append({
+                "transaction_id": row[0],
+                "customer_id": row[1],
+                "amount": row[2],
+                "city": row[3],
+                "timestamp": timestamp,
+                "risk_score": row[5],
+                "risk_level": row[6],
+                "reasons": row[7],
+                "decision": row[8],
+                "batch_id": row[9]
+            })
+
+        # Insert only new transaction IDs.
+        # Existing records will not be overwritten.
+        if records:
+            statement = insert(Transaction).values(records)
+
+            statement = statement.on_conflict_do_nothing(
+                index_elements=["transaction_id"]
             )
 
-            # Preserve the existing transaction-ID update behaviour
-            session.merge(transaction)
+            session.execute(statement)
 
         session.commit()
         return True
@@ -62,18 +83,21 @@ def save_pipeline_results(batch, source, input_rows,
     finally:
         session.close()
 
-from sqlalchemy import func
-from .models import Transaction, PipelineRun
 
+# --------------------------------
+# Dashboard data
+# --------------------------------
 
 def get_dashboard_data():
     session = SessionLocal()
 
     try:
         counts = {
-            level: session.query(func.count(Transaction.transaction_id))
-            .filter(Transaction.risk_level == level)
-            .scalar()
+            level: session.query(
+                func.count(Transaction.transaction_id)
+            ).filter(
+                Transaction.risk_level == level
+            ).scalar()
             for level in ["HIGH", "MEDIUM", "LOW"]
         }
 
@@ -100,6 +124,7 @@ def get_dashboard_data():
             "high": counts["HIGH"],
             "medium": counts["MEDIUM"],
             "low": counts["LOW"],
+
             "transactions": [
                 {
                     "transaction_id": t.transaction_id,
@@ -116,6 +141,7 @@ def get_dashboard_data():
                 }
                 for t in transactions
             ],
+
             "runs": [
                 {
                     "batch_id": r.batch_id,
@@ -135,6 +161,10 @@ def get_dashboard_data():
     finally:
         session.close()
 
+
+# --------------------------------
+# Transaction explorer
+# --------------------------------
 
 def get_transactions():
     session = SessionLocal()
