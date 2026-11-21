@@ -1,74 +1,1450 @@
-<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>NORMETRIC | Transaction Intelligence</title><link rel="stylesheet" href="/static/style.css"></head>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>NORMETRIC | Transaction Intelligence</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
 <body>
+
 <div class="app-shell">
-<aside class="sidebar">
- <a class="brand" href="#home" onclick="showPage('home')"><span class="brand-icon">N</span><span><b>NORMETRIC</b><small>TRANSACTION INTELLIGENCE</small></span></a>
- <div class="nav-label">WORKSPACE</div>
- <nav>
-  <button class="nav-link active" data-page="home" onclick="showPage('home')">⌂ <span>Home</span></button>
-  <button class="nav-link" data-page="dashboard" onclick="showPage('dashboard')">▦ <span>Dashboard</span></button>
-  <button class="nav-link" data-page="pipeline" onclick="showPage('pipeline')">⇄ <span>Data pipeline</span></button>
-  <button class="nav-link" data-page="automation" onclick="showPage('automation')">⚡ <span>Automation</span></button>
-  <button class="nav-link" data-page="transactions" onclick="showPage('transactions')">▤ <span>Transactions</span></button>
-  <button class="nav-link" data-page="analytics" onclick="showPage('analytics')">◫ <span>Risk analytics</span></button>
- </nav>
- <div class="sidebar-bottom"><span class="pulse"></span> Services operational<small>Auto-refresh every 10 seconds</small></div>
-</aside>
-<main class="main">
-<section id="page-home" class="page landing">
- <div class="hero-grid"></div><div class="hero-orb orb-one"></div><div class="hero-orb orb-two"></div><div class="network-lines"></div>
- <header class="landing-top"><span class="eyebrow">DATA ENGINEERING · FRAUD INTELLIGENCE</span><span class="live-pill"><i></i> SYSTEM ONLINE</span></header>
- <div class="hero-content"><div class="hero-copy"><div class="eyebrow">INTELLIGENT TRANSACTION MONITORING</div>
- <h1>Turn transaction data<br>into <em>actionable intelligence.</em></h1>
- <p>NORMETRIC automates the journey from raw transaction files to clean, enriched data and explainable fraud-risk insights — all in one monitoring workspace.</p>
- <div class="hero-actions"><button class="btn primary" onclick="showPage('dashboard')">Explore dashboard <b>→</b></button><button class="btn outline" onclick="showPage('pipeline')">Run a data pipeline</button></div>
- <div class="hero-stats"><div><b>3</b><span>ETL data layers</span></div><div><b>24/7*</b><span>Monitoring design</span></div><div><b>10s</b><span>Dashboard refresh</span></div></div>
- <small class="disclaimer">*The application refreshes while running; it does not process live bank streams.</small></div>
- <div class="hero-visual"><div class="orbit orbit-a"></div><div class="orbit orbit-b"></div><div class="core"><span>NM</span><small>RISK ENGINE</small></div><div class="float-card card-top"><i class="dot teal"></i> PIPELINE <b>ACTIVE</b></div><div class="float-card card-bottom"><i class="dot violet"></i> ANOMALY SIGNAL <b>MONITORED</b></div><div class="node n1">CSV</div><div class="node n2">ETL</div><div class="node n3">AI</div><div class="node n4">DATA</div></div></div>
- <div class="service-heading"><span class="eyebrow">NORMETRIC WORKSPACE</span><h2>Everything you need to monitor the data journey.</h2></div>
- <div class="service-grid">
-  <button class="service-card" onclick="showPage('dashboard')"><span>▦</span><b>Monitoring dashboard</b><small>Live-refreshing KPIs, risk distribution and recent activity.</small><i>Open dashboard →</i></button>
-  <button class="service-card" onclick="showPage('pipeline')"><span>⇄</span><b>Layered ETL pipeline</b><small>Ingest, validate, clean, enrich and store transaction data.</small><i>Explore pipeline →</i></button>
-  <button class="service-card" onclick="showPage('automation')"><span>⚡</span><b>Workflow automation</b><small>Run batch processing with one upload and track every run.</small><i>Open automation →</i></button>
-  <button class="service-card" onclick="showPage('transactions')"><span>▤</span><b>Transaction explorer</b><small>Search, inspect and export scored transaction records.</small><i>View transactions →</i></button>
-  <button class="service-card" onclick="showPage('analytics')"><span>◫</span><b>Risk analytics</b><small>Visualize risk levels and patterns from processed data.</small><i>View analytics →</i></button>
- </div>
- <footer>NORMETRIC · STUDENT DATA ENGINEERING PROJECT <span>Risk indicators are not proof of fraud; decisions are simulated.</span></footer>
-</section>
 
-<section id="page-dashboard" class="page hidden">
- <div class="page-header"><div><div class="eyebrow">WORKSPACE / OVERVIEW</div><h1>Monitoring dashboard</h1><p>Current transaction volumes, risk signals and pipeline activity.</p></div><button class="btn secondary" onclick="refreshAll()">↻ Refresh now</button></div>
- <div class="metrics"><article class="metric"><small>TOTAL TRANSACTIONS</small><strong id="total">0</strong><span>Processed records</span></article><article class="metric"><small>HIGH RISK</small><strong class="red" id="high">0</strong><span>Require attention</span></article><article class="metric"><small>MEDIUM RISK</small><strong class="amber" id="medium">0</strong><span>Review suggested</span></article><article class="metric"><small>PIPELINE RUNS</small><strong id="runCount">0</strong><span>Completed batches</span></article></div>
- <div class="content-grid"><article class="panel"><div class="panel-head"><div><h2>Risk distribution</h2><p>Transactions grouped by risk level</p></div><span class="tag">LIVE DATA</span></div><div class="chart-wrap"><canvas id="riskChart" height="220"></canvas></div></article><article class="panel"><div class="panel-head"><div><h2>Pipeline health</h2><p>Latest batch execution summary</p></div></div><div id="pipelineSummary" class="pipeline-summary"><div class="empty">No pipeline runs yet.</div></div></article></div>
- <article class="panel"><div class="panel-head"><div><h2>Recent transactions</h2><p>Latest scored records</p></div><button class="text-btn" onclick="showPage('transactions')">View all →</button></div><div class="table-wrap"><table><thead><tr><th>TRANSACTION</th><th>CUSTOMER</th><th>AMOUNT</th><th>CITY</th><th>SCORE</th><th>LEVEL</th><th>DECISION</th></tr></thead><tbody id="recentRows"><tr><td colspan="7" class="empty">No data yet. Run the pipeline.</td></tr></tbody></table></div></article>
-</section>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
 
-<section id="page-pipeline" class="page hidden">
- <div class="page-header"><div><div class="eyebrow">DATA ENGINEERING / ETL</div><h1>Layered data pipeline</h1><p>Move transaction data through Bronze, Silver and Gold processing layers.</p></div><span class="live-pill"><i></i> READY TO RUN</span></div>
- <div class="layer-flow"><div class="layer-box bronze"><b>01 / BRONZE</b><strong>Raw ingestion</strong><small>Preserve the original uploaded CSV.</small></div><div class="flow-arrow">→</div><div class="layer-box silver"><b>02 / SILVER</b><strong>Clean & validate</strong><small>Type checks, invalid rows and deduplication.</small></div><div class="flow-arrow">→</div><div class="layer-box gold"><b>03 / GOLD</b><strong>Risk-enriched output</strong><small>Features, risk score and explanations.</small></div></div>
- <div class="content-grid"><article class="panel"><h2>Start a pipeline run</h2><p>Upload a CSV and NORMETRIC will automatically execute all three stages.</p><div class="upload-zone"><div class="upload-symbol">⇧</div><div><b>Select transaction CSV</b><small>Required: transaction_id, customer_id, amount, city. Optional: timestamp.</small><input type="file" id="file" accept=".csv"></div></div><button class="btn primary" onclick="uploadCsv()">Run pipeline automatically →</button><a class="text-btn sample-link" href="/static/sample_transactions.csv" download>Download sample CSV ↓</a><div id="uploadMessage" class="message"></div></article>
- <article class="panel"><h2>What happens automatically?</h2><div class="step-list"><div><b>01</b><span><strong>Ingest</strong><small>Save original source in Bronze.</small></span></div><div><b>02</b><span><strong>Validate & clean</strong><small>Reject invalid rows and remove duplicates.</small></span></div><div><b>03</b><span><strong>Enrich & score</strong><small>Calculate risk indicators and anomaly signal.</small></span></div><div><b>04</b><span><strong>Store & report</strong><small>Write Gold output and update dashboard metrics.</small></span></div></div></article></div>
- <article class="panel"><div class="panel-head"><div><h2>Pipeline execution history</h2><p>Batch-level observability and data-quality counts.</p></div></div><div class="table-wrap"><table><thead><tr><th>BATCH</th><th>SOURCE</th><th>INPUT</th><th>VALID</th><th>REJECTED</th><th>DUPLICATES</th><th>FLAGGED</th><th>STATUS</th></tr></thead><tbody id="pipelineRows"><tr><td colspan="8" class="empty">No runs yet.</td></tr></tbody></table></div></article>
-</section>
+        <a class="brand" href="#home" onclick="showPage('home')">
+            <span class="brand-icon">N</span>
+            <span>
+                <b>NORMETRIC</b>
+                <small>TRANSACTION INTELLIGENCE</small>
+            </span>
+        </a>
 
-<section id="page-automation" class="page hidden">
- <div class="page-header"><div><div class="eyebrow">OPERATIONS / AUTOMATION</div><h1>Workflow automation</h1><p>Reduce repetitive manual steps with a single batch-processing action.</p></div><span class="tag green">AUTOMATED ETL</span></div>
- <div class="automation-banner"><div><span class="eyebrow">ONE ACTION · THREE DATA LAYERS</span><h2>Upload once. Process automatically.</h2><p>NORMETRIC validates the file, removes duplicate transaction IDs, calculates risk indicators, stores results and refreshes monitoring views.</p><button class="btn primary" onclick="showPage('pipeline')">Start automated run →</button></div><div class="automation-icon">⚡</div></div>
- <div class="content-grid"><article class="panel"><h2>Automated tasks</h2><div class="task-row"><span class="task-icon">✓</span><div><b>File validation</b><small>Required columns and numeric amount checks.</small></div><span class="tag green">AUTO</span></div><div class="task-row"><span class="task-icon">✓</span><div><b>Duplicate handling</b><small>Duplicate transaction IDs removed during Silver processing.</small></div><span class="tag green">AUTO</span></div><div class="task-row"><span class="task-icon">✓</span><div><b>Risk enrichment</b><small>Rules and Isolation Forest add risk indicators.</small></div><span class="tag green">AUTO</span></div><div class="task-row"><span class="task-icon">✓</span><div><b>Database and dashboard update</b><small>Processed records stored and views refresh every 10 seconds.</small></div><span class="tag green">AUTO</span></div></article>
- <article class="panel"><h2>Automation boundary</h2><p class="note">The current version automates processing after a user uploads a CSV. It does not yet watch a folder, run on a schedule, or stream live bank transactions. These are possible future additions, not active features.</p><div class="mini-stat"><b>10 sec</b><span>Dashboard refresh interval</span></div><div class="mini-stat"><b>1 click</b><span>To execute the complete ETL workflow</span></div></article></div>
- <article class="panel"><h2>Recent automated runs</h2><div class="table-wrap"><table><thead><tr><th>BATCH</th><th>SOURCE</th><th>INPUT</th><th>VALID</th><th>REJECTED</th><th>DUPLICATES</th><th>FLAGGED</th><th>STATUS</th></tr></thead><tbody id="automationRows"><tr><td colspan="8" class="empty">No runs yet.</td></tr></tbody></table></div></article>
-</section>
+        <div class="nav-label">WORKSPACE</div>
 
-<section id="page-transactions" class="page hidden">
- <div class="page-header"><div><div class="eyebrow">MONITORING / RECORDS</div><h1>Transaction explorer</h1><p>Search, review and export transaction risk assessments.</p></div><a class="btn secondary" href="/api/export">Export CSV ↓</a></div>
- <article class="panel"><div class="filters"><input id="search" placeholder="Search transaction, customer or city…" oninput="renderTransactions()"><select id="riskFilter" onchange="renderTransactions()"><option value="">All risk levels</option><option>HIGH</option><option>MEDIUM</option><option>LOW</option></select></div><div class="table-wrap"><table><thead><tr><th>TRANSACTION</th><th>CUSTOMER</th><th>AMOUNT</th><th>CITY</th><th>SCORE</th><th>LEVEL</th><th>EXPLANATION</th></tr></thead><tbody id="allRows"><tr><td colspan="7" class="empty">No records available.</td></tr></tbody></table></div></article>
-</section>
+        <nav>
+            <button class="nav-link active" data-page="home"
+                onclick="showPage('home')">
+                ⌂ <span>Home</span>
+            </button>
 
-<section id="page-analytics" class="page hidden">
- <div class="page-header"><div><div class="eyebrow">INSIGHTS / ANALYTICS</div><h1>Risk analytics</h1><p>Visual summary of the transactions processed by NORMETRIC.</p></div><span class="tag">AUTO-UPDATED</span></div>
- <div class="content-grid"><article class="panel"><div class="panel-head"><div><h2>Risk composition</h2><p>Share of transactions in each category</p></div></div><div class="chart-wrap"><canvas id="analyticsChart" height="260"></canvas></div></article><article class="panel"><div class="panel-head"><div><h2>Transaction risk scores</h2><p>Latest transaction scores</p></div></div><div class="chart-wrap"><canvas id="scoreChart" height="260"></canvas></div></article></div>
- <article class="panel"><h2>How to interpret these charts</h2><p>HIGH and MEDIUM categories identify records that deserve review under the configured demonstration rules. A risk score is an unusual-activity indicator, not a verified probability of fraud.</p></article>
-</section>
-</main></div><script src="/static/app.js"></script></body></html>
+            <button class="nav-link" data-page="dashboard"
+                onclick="showPage('dashboard')">
+                ▦ <span>Dashboard</span>
+            </button>
+
+            <button class="nav-link" data-page="pipeline"
+                onclick="showPage('pipeline')">
+                ⇄ <span>Data pipeline</span>
+            </button>
+
+            <button class="nav-link" data-page="automation"
+                onclick="showPage('automation')">
+                ⚡ <span>Automation</span>
+            </button>
+
+            <button class="nav-link" data-page="transactions"
+                onclick="showPage('transactions')">
+                ▤ <span>Transactions</span>
+            </button>
+
+            <button class="nav-link" data-page="analytics"
+                onclick="showPage('analytics')">
+                ◫ <span>Risk analytics</span>
+            </button>
+
+            <button class="nav-link" data-page="assistant"
+                onclick="showPage('assistant')">
+                ✦ <span>AI Assistant</span>
+            </button>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <span class="pulse"></span>
+            Services operational
+            <small>Auto-refresh every 10 seconds</small>
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+
+
+        <!-- HOME PAGE -->
+        <section id="page-home" class="page landing">
+
+            <div class="hero-grid"></div>
+            <div class="hero-orb orb-one"></div>
+            <div class="hero-orb orb-two"></div>
+            <div class="network-lines"></div>
+
+            <header class="landing-top">
+
+                <span class="eyebrow">
+                    DATA ENGINEERING · FRAUD INTELLIGENCE
+                </span>
+
+                <span class="live-pill">
+                    <i></i> SYSTEM ONLINE
+                </span>
+
+            </header>
+
+            <div class="hero-content">
+
+                <div class="hero-copy">
+
+                    <div class="eyebrow">
+                        INTELLIGENT TRANSACTION MONITORING
+                    </div>
+
+                    <h1>
+                        Turn transaction data<br>
+                        into <em>actionable intelligence.</em>
+                    </h1>
+
+                    <p>
+                        NORMETRIC automates the journey from raw transaction
+                        files to clean, enriched data and explainable fraud-risk
+                        insights — all in one monitoring workspace.
+                    </p>
+
+                    <div class="hero-actions">
+
+                        <button class="btn primary"
+                            onclick="showPage('dashboard')">
+                            Explore dashboard <b>→</b>
+                        </button>
+
+                        <button class="btn outline"
+                            onclick="showPage('pipeline')">
+                            Run a data pipeline
+                        </button>
+
+                        <button class="btn outline"
+                            onclick="showPage('assistant')">
+                            Ask AI Assistant ✦
+                        </button>
+
+                    </div>
+
+                    <div class="hero-stats">
+
+                        <div>
+                            <b>3</b>
+                            <span>ETL data layers</span>
+                        </div>
+
+                        <div>
+                            <b>24/7*</b>
+                            <span>Monitoring design</span>
+                        </div>
+
+                        <div>
+                            <b>10s</b>
+                            <span>Dashboard refresh</span>
+                        </div>
+
+                    </div>
+
+                    <small class="disclaimer">
+                        *The application refreshes while running;
+                        it does not process live bank streams.
+                    </small>
+
+                </div>
+
+
+                <div class="hero-visual">
+
+                    <div class="orbit orbit-a"></div>
+                    <div class="orbit orbit-b"></div>
+
+                    <div class="core">
+                        <span>NM</span>
+                        <small>RISK ENGINE</small>
+                    </div>
+
+                    <div class="float-card card-top">
+                        <i class="dot teal"></i>
+                        PIPELINE <b>ACTIVE</b>
+                    </div>
+
+                    <div class="float-card card-bottom">
+                        <i class="dot violet"></i>
+                        ANOMALY SIGNAL <b>MONITORED</b>
+                    </div>
+
+                    <div class="node n1">CSV</div>
+                    <div class="node n2">ETL</div>
+                    <div class="node n3">AI</div>
+                    <div class="node n4">DATA</div>
+
+                </div>
+
+            </div>
+
+
+            <!-- HOME PAGE SERVICE CARDS -->
+            <div class="service-heading">
+
+                <span class="eyebrow">NORMETRIC WORKSPACE</span>
+
+                <h2>
+                    Everything you need to monitor the data journey.
+                </h2>
+
+            </div>
+
+
+            <div class="service-grid">
+
+                <button class="service-card"
+                    onclick="showPage('dashboard')">
+
+                    <span>▦</span>
+
+                    <b>Monitoring dashboard</b>
+
+                    <small>
+                        Live-refreshing KPIs, risk distribution and recent activity.
+                    </small>
+
+                    <i>Open dashboard →</i>
+
+                </button>
+
+
+                <button class="service-card"
+                    onclick="showPage('pipeline')">
+
+                    <span>⇄</span>
+
+                    <b>Layered ETL pipeline</b>
+
+                    <small>
+                        Ingest, validate, clean, enrich and store transaction data.
+                    </small>
+
+                    <i>Explore pipeline →</i>
+
+                </button>
+
+
+                <button class="service-card"
+                    onclick="showPage('automation')">
+
+                    <span>⚡</span>
+
+                    <b>Workflow automation</b>
+
+                    <small>
+                        Run batch processing with one upload and track every run.
+                    </small>
+
+                    <i>Open automation →</i>
+
+                </button>
+
+
+                <button class="service-card"
+                    onclick="showPage('transactions')">
+
+                    <span>▤</span>
+
+                    <b>Transaction explorer</b>
+
+                    <small>
+                        Search, inspect and export scored transaction records.
+                    </small>
+
+                    <i>View transactions →</i>
+
+                </button>
+
+
+                <button class="service-card"
+                    onclick="showPage('analytics')">
+
+                    <span>◫</span>
+
+                    <b>Risk analytics</b>
+
+                    <small>
+                        Visualize risk levels and patterns from processed data.
+                    </small>
+
+                    <i>View analytics →</i>
+
+                </button>
+
+
+                <!-- NEW AI ASSISTANT CARD -->
+                <button class="service-card ai-service-card"
+                    onclick="showPage('assistant')">
+
+                    <span>✦</span>
+
+                    <b>NORMETRIC AI Assistant</b>
+
+                    <small>
+                        Chat with Gemini to understand transaction risks,
+                        investigate high-risk records and summarize database insights.
+                    </small>
+
+                    <i>Open AI Assistant →</i>
+
+                </button>
+
+            </div>
+
+
+            <footer>
+                NORMETRIC · STUDENT DATA ENGINEERING PROJECT
+
+                <span>
+                    Risk indicators are not proof of fraud; decisions are simulated.
+                </span>
+            </footer>
+
+        </section>
+
+
+
+        <!-- DASHBOARD PAGE -->
+        <section id="page-dashboard" class="page hidden">
+
+            <div class="page-header">
+
+                <div>
+                    <div class="eyebrow">WORKSPACE / OVERVIEW</div>
+
+                    <h1>Monitoring dashboard</h1>
+
+                    <p>
+                        Current transaction volumes, risk signals and pipeline activity.
+                    </p>
+                </div>
+
+                <button class="btn secondary" onclick="refreshAll()">
+                    ↻ Refresh now
+                </button>
+
+            </div>
+
+
+            <div class="metrics">
+
+                <article class="metric">
+                    <small>TOTAL TRANSACTIONS</small>
+                    <strong id="total">0</strong>
+                    <span>Processed records</span>
+                </article>
+
+                <article class="metric">
+                    <small>HIGH RISK</small>
+                    <strong class="red" id="high">0</strong>
+                    <span>Require attention</span>
+                </article>
+
+                <article class="metric">
+                    <small>MEDIUM RISK</small>
+                    <strong class="amber" id="medium">0</strong>
+                    <span>Review suggested</span>
+                </article>
+
+                <article class="metric">
+                    <small>PIPELINE RUNS</small>
+                    <strong id="runCount">0</strong>
+                    <span>Completed batches</span>
+                </article>
+
+            </div>
+
+
+            <div class="content-grid">
+
+                <article class="panel">
+
+                    <div class="panel-head">
+                        <div>
+                            <h2>Risk distribution</h2>
+                            <p>Transactions grouped by risk level</p>
+                        </div>
+
+                        <span class="tag">LIVE DATA</span>
+                    </div>
+
+                    <div class="chart-wrap">
+                        <canvas id="riskChart" height="220"></canvas>
+                    </div>
+
+                </article>
+
+
+                <article class="panel">
+
+                    <div class="panel-head">
+                        <div>
+                            <h2>Pipeline health</h2>
+                            <p>Latest batch execution summary</p>
+                        </div>
+                    </div>
+
+                    <div id="pipelineSummary" class="pipeline-summary">
+                        <div class="empty">No pipeline runs yet.</div>
+                    </div>
+
+                </article>
+
+            </div>
+
+
+            <article class="panel">
+
+                <div class="panel-head">
+
+                    <div>
+                        <h2>Recent transactions</h2>
+                        <p>Latest scored records</p>
+                    </div>
+
+                    <button class="text-btn"
+                        onclick="showPage('transactions')">
+                        View all →
+                    </button>
+
+                </div>
+
+
+                <div class="table-wrap">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>TRANSACTION</th>
+                                <th>CUSTOMER</th>
+                                <th>AMOUNT</th>
+                                <th>CITY</th>
+                                <th>SCORE</th>
+                                <th>LEVEL</th>
+                                <th>DECISION</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="recentRows">
+                            <tr>
+                                <td colspan="7" class="empty">
+                                    No data yet. Run the pipeline.
+                                </td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </article>
+
+        </section>
+
+
+
+        <!-- DATA PIPELINE PAGE -->
+        <section id="page-pipeline" class="page hidden">
+
+            <div class="page-header">
+
+                <div>
+                    <div class="eyebrow">DATA ENGINEERING / ETL</div>
+
+                    <h1>Layered data pipeline</h1>
+
+                    <p>
+                        Move transaction data through Bronze, Silver and Gold processing layers.
+                    </p>
+                </div>
+
+                <span class="live-pill">
+                    <i></i> READY TO RUN
+                </span>
+
+            </div>
+
+
+            <div class="layer-flow">
+
+                <div class="layer-box bronze">
+                    <b>01 / BRONZE</b>
+                    <strong>Raw ingestion</strong>
+                    <small>Preserve the original uploaded CSV.</small>
+                </div>
+
+                <div class="flow-arrow">→</div>
+
+                <div class="layer-box silver">
+                    <b>02 / SILVER</b>
+                    <strong>Clean & validate</strong>
+                    <small>Type checks, invalid rows and deduplication.</small>
+                </div>
+
+                <div class="flow-arrow">→</div>
+
+                <div class="layer-box gold">
+                    <b>03 / GOLD</b>
+                    <strong>Risk-enriched output</strong>
+                    <small>Features, risk score and explanations.</small>
+                </div>
+
+            </div>
+
+
+            <div class="content-grid">
+
+                <article class="panel">
+
+                    <h2>Start a pipeline run</h2>
+
+                    <p>
+                        Upload a CSV and NORMETRIC will automatically execute all three stages.
+                    </p>
+
+                    <div class="upload-zone">
+
+                        <div class="upload-symbol">⇧</div>
+
+                        <div>
+                            <b>Select transaction CSV</b>
+
+                            <small>
+                                Required: transaction_id, customer_id, amount, city.
+                                Optional: timestamp.
+                            </small>
+
+                            <input type="file" id="file" accept=".csv">
+                        </div>
+
+                    </div>
+
+                    <button class="btn primary" onclick="uploadCsv()">
+                        Run pipeline automatically →
+                    </button>
+
+                    <a class="text-btn sample-link"
+                        href="/static/sample_transactions.csv" download>
+                        Download sample CSV ↓
+                    </a>
+
+                    <div id="uploadMessage" class="message"></div>
+
+                </article>
+
+
+                <article class="panel">
+
+                    <h2>What happens automatically?</h2>
+
+                    <div class="step-list">
+
+                        <div>
+                            <b>01</b>
+                            <span>
+                                <strong>Ingest</strong>
+                                <small>Save original source in Bronze.</small>
+                            </span>
+                        </div>
+
+                        <div>
+                            <b>02</b>
+                            <span>
+                                <strong>Validate & clean</strong>
+                                <small>Reject invalid rows and remove duplicates.</small>
+                            </span>
+                        </div>
+
+                        <div>
+                            <b>03</b>
+                            <span>
+                                <strong>Enrich & score</strong>
+                                <small>Calculate risk indicators and anomaly signal.</small>
+                            </span>
+                        </div>
+
+                        <div>
+                            <b>04</b>
+                            <span>
+                                <strong>Store & report</strong>
+                                <small>Write Gold output and update dashboard metrics.</small>
+                            </span>
+                        </div>
+
+                    </div>
+
+                </article>
+
+            </div>
+
+
+            <article class="panel">
+
+                <div class="panel-head">
+                    <div>
+                        <h2>Pipeline execution history</h2>
+                        <p>Batch-level observability and data-quality counts.</p>
+                    </div>
+                </div>
+
+                <div class="table-wrap">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>BATCH</th>
+                                <th>SOURCE</th>
+                                <th>INPUT</th>
+                                <th>VALID</th>
+                                <th>REJECTED</th>
+                                <th>DUPLICATES</th>
+                                <th>FLAGGED</th>
+                                <th>STATUS</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="pipelineRows">
+                            <tr>
+                                <td colspan="8" class="empty">No runs yet.</td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </article>
+
+        </section>
+
+
+
+        <!-- AUTOMATION PAGE -->
+        <section id="page-automation" class="page hidden">
+
+            <div class="page-header">
+
+                <div>
+                    <div class="eyebrow">OPERATIONS / AUTOMATION</div>
+
+                    <h1>Workflow automation</h1>
+
+                    <p>
+                        Reduce repetitive manual steps with a single batch-processing action.
+                    </p>
+                </div>
+
+                <span class="tag green">AUTOMATED ETL</span>
+
+            </div>
+
+
+            <div class="automation-banner">
+
+                <div>
+                    <span class="eyebrow">ONE ACTION · THREE DATA LAYERS</span>
+
+                    <h2>Upload once. Process automatically.</h2>
+
+                    <p>
+                        NORMETRIC validates the file, removes duplicate transaction IDs,
+                        calculates risk indicators, stores results and refreshes monitoring views.
+                    </p>
+
+                    <button class="btn primary" onclick="showPage('pipeline')">
+                        Start automated run →
+                    </button>
+                </div>
+
+                <div class="automation-icon">⚡</div>
+
+            </div>
+
+
+            <div class="content-grid">
+
+                <article class="panel">
+
+                    <h2>Automated tasks</h2>
+
+                    <div class="task-row">
+                        <span class="task-icon">✓</span>
+                        <div>
+                            <b>File validation</b>
+                            <small>Required columns and numeric amount checks.</small>
+                        </div>
+                        <span class="tag green">AUTO</span>
+                    </div>
+
+                    <div class="task-row">
+                        <span class="task-icon">✓</span>
+                        <div>
+                            <b>Duplicate handling</b>
+                            <small>Duplicate transaction IDs removed during Silver processing.</small>
+                        </div>
+                        <span class="tag green">AUTO</span>
+                    </div>
+
+                    <div class="task-row">
+                        <span class="task-icon">✓</span>
+                        <div>
+                            <b>Risk enrichment</b>
+                            <small>Rules and Isolation Forest add risk indicators.</small>
+                        </div>
+                        <span class="tag green">AUTO</span>
+                    </div>
+
+                    <div class="task-row">
+                        <span class="task-icon">✓</span>
+                        <div>
+                            <b>Database and dashboard update</b>
+                            <small>Processed records stored and views refresh every 10 seconds.</small>
+                        </div>
+                        <span class="tag green">AUTO</span>
+                    </div>
+
+                </article>
+
+
+                <article class="panel">
+
+                    <h2>Automation boundary</h2>
+
+                    <p class="note">
+                        The current version automates processing after a user uploads a CSV.
+                        It does not yet watch a folder, run on a schedule, or stream live bank
+                        transactions. These are possible future additions, not active features.
+                    </p>
+
+                    <div class="mini-stat">
+                        <b>10 sec</b>
+                        <span>Dashboard refresh interval</span>
+                    </div>
+
+                    <div class="mini-stat">
+                        <b>1 click</b>
+                        <span>To execute the complete ETL workflow</span>
+                    </div>
+
+                </article>
+
+            </div>
+
+
+            <article class="panel">
+
+                <h2>Recent automated runs</h2>
+
+                <div class="table-wrap">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>BATCH</th>
+                                <th>SOURCE</th>
+                                <th>INPUT</th>
+                                <th>VALID</th>
+                                <th>REJECTED</th>
+                                <th>DUPLICATES</th>
+                                <th>FLAGGED</th>
+                                <th>STATUS</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="automationRows">
+                            <tr>
+                                <td colspan="8" class="empty">No runs yet.</td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </article>
+
+        </section>
+
+
+
+        <!-- TRANSACTION EXPLORER PAGE -->
+        <section id="page-transactions" class="page hidden">
+
+            <div class="page-header">
+
+                <div>
+                    <div class="eyebrow">MONITORING / RECORDS</div>
+
+                    <h1>Transaction explorer</h1>
+
+                    <p>
+                        Search, review and export transaction risk assessments.
+                    </p>
+                </div>
+
+                <a class="btn secondary" href="/api/export">
+                    Export CSV ↓
+                </a>
+
+            </div>
+
+
+            <article class="panel">
+
+                <div class="filters">
+
+                    <input id="search"
+                        placeholder="Search transaction, customer or city…"
+                        oninput="renderTransactions()">
+
+                    <select id="riskFilter" onchange="renderTransactions()">
+                        <option value="">All risk levels</option>
+                        <option>HIGH</option>
+                        <option>MEDIUM</option>
+                        <option>LOW</option>
+                    </select>
+
+                </div>
+
+
+                <div class="table-wrap">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>TRANSACTION</th>
+                                <th>CUSTOMER</th>
+                                <th>AMOUNT</th>
+                                <th>CITY</th>
+                                <th>SCORE</th>
+                                <th>LEVEL</th>
+                                <th>EXPLANATION</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="allRows">
+                            <tr>
+                                <td colspan="7" class="empty">
+                                    No records available.
+                                </td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </article>
+
+        </section>
+
+
+
+        <!-- RISK ANALYTICS PAGE -->
+        <section id="page-analytics" class="page hidden">
+
+            <div class="page-header">
+
+                <div>
+                    <div class="eyebrow">INSIGHTS / ANALYTICS</div>
+
+                    <h1>Risk analytics</h1>
+
+                    <p>
+                        Visual summary of the transactions processed by NORMETRIC.
+                    </p>
+                </div>
+
+                <span class="tag">AUTO-UPDATED</span>
+
+            </div>
+
+
+            <div class="content-grid">
+
+                <article class="panel">
+
+                    <div class="panel-head">
+                        <div>
+                            <h2>Risk composition</h2>
+                            <p>Share of transactions in each category</p>
+                        </div>
+                    </div>
+
+                    <div class="chart-wrap">
+                        <canvas id="analyticsChart" height="260"></canvas>
+                    </div>
+
+                </article>
+
+
+                <article class="panel">
+
+                    <div class="panel-head">
+                        <div>
+                            <h2>Transaction risk scores</h2>
+                            <p>Latest transaction scores</p>
+                        </div>
+                    </div>
+
+                    <div class="chart-wrap">
+                        <canvas id="scoreChart" height="260"></canvas>
+                    </div>
+
+                </article>
+
+            </div>
+
+
+            <article class="panel">
+
+                <h2>How to interpret these charts</h2>
+
+                <p>
+                    HIGH and MEDIUM categories identify records that deserve review
+                    under the configured demonstration rules. A risk score is an
+                    unusual-activity indicator, not a verified probability of fraud.
+                </p>
+
+            </article>
+
+        </section>
+
+
+
+        <!-- AI ASSISTANT PAGE -->
+        <section id="page-assistant" class="page hidden">
+
+            <div class="page-header">
+
+                <div>
+                    <div class="eyebrow">NORMETRIC INTELLIGENCE</div>
+
+                    <h1>AI Assistant</h1>
+
+                    <p>
+                        Ask questions about transaction risks and your processed data.
+                    </p>
+                </div>
+
+                <span class="tag">GEMINI POWERED</span>
+
+            </div>
+
+
+            <article class="panel assistant-panel">
+
+                <div class="assistant-intro">
+
+                    <div class="assistant-avatar">N</div>
+
+                    <div>
+                        <h2>NORMETRIC Intelligence</h2>
+
+                        <p>
+                            Read-only assistant · Answers are based on records
+                            currently stored in NORMETRIC.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div id="chatMessages"
+                    class="chat-messages"
+                    aria-live="polite">
+
+                    <div class="chat-message assistant-message">
+
+                        <div class="chat-avatar">N</div>
+
+                        <div class="chat-bubble">
+
+                            <b>Welcome to NORMETRIC AI.</b>
+
+                            <p>
+                                Ask me about high-risk transactions, risk indicators,
+                                transaction IDs or your current monitoring summary.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="chat-suggestions">
+
+                    <button type="button"
+                        onclick="useChatPrompt('Give me an overview of the current transaction risk situation.')">
+                        Risk overview
+                    </button>
+
+                    <button type="button"
+                        onclick="useChatPrompt('How many high-risk transactions are recorded?')">
+                        High-risk count
+                    </button>
+
+                    <button type="button"
+                        onclick="useChatPrompt('Show me the highest-risk transactions and explain their indicators.')">
+                        Highest-risk records
+                    </button>
+
+                    <button type="button"
+                        onclick="useChatPrompt('Summarize the latest pipeline execution.')">
+                        Latest pipeline run
+                    </button>
+
+                </div>
+
+
+                <form id="chatForm" class="chat-form">
+
+                    <textarea
+                        id="chatInput"
+                        rows="2"
+                        maxlength="1000"
+                        placeholder="Ask NORMETRIC about your transaction data..."
+                        aria-label="Message NORMETRIC AI">
+                    </textarea>
+
+                    <button id="chatSendButton"
+                        class="btn primary"
+                        type="submit">
+                        Send ↑
+                    </button>
+
+                </form>
+
+
+                <div id="chatStatus" class="chat-status">
+                    AI responses are informational. Risk indicators are not proof of fraud.
+                </div>
+
+            </article>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+
+<!-- CUSTOM STYLES -->
+<style>
+
+/* AI EXPLANATION BUTTON */
+
+.ai-explain-btn {
+    background: #283b68;
+    color: #fff;
+    border: 1px solid #526da8;
+    border-radius: 7px;
+    padding: 7px 10px;
+    cursor: pointer;
+    font: inherit;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.ai-explain-btn:hover {
+    background: #354d83;
+}
+
+.ai-explain-btn:disabled {
+    opacity: .55;
+    cursor: wait;
+}
+
+
+/* AI EXPLANATION DIALOG */
+
+.ai-explanation-dialog {
+    width: min(560px, calc(100% - 32px));
+    border: 1px solid #344766;
+    border-radius: 14px;
+    background: #111c30;
+    color: #eaf0ff;
+    padding: 22px;
+    box-shadow: 0 24px 80px #0009;
+}
+
+.ai-explanation-dialog::backdrop {
+    background: #020817c9;
+    backdrop-filter: blur(3px);
+}
+
+.ai-explanation-dialog h2 {
+    margin: 0 0 8px;
+    font-size: 20px;
+}
+
+.ai-explanation-dialog p {
+    color: #aab8d0;
+    font-size: 13px;
+}
+
+.ai-explanation-content {
+    white-space: pre-wrap;
+    line-height: 1.65;
+    color: #eaf0ff;
+    background: #17243a;
+    border: 1px solid #2d405f;
+    border-radius: 9px;
+    padding: 15px;
+    margin: 14px 0;
+}
+
+.ai-explanation-status {
+    font-size: 12px;
+    color: #9aadd0;
+}
+
+.ai-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+}
+
+.ai-dialog-close {
+    background: #354a70;
+    color: #fff;
+    border: 0;
+    border-radius: 7px;
+    padding: 9px 16px;
+    cursor: pointer;
+}
+
+
+/* AI ASSISTANT PANEL */
+
+.assistant-panel {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 22px;
+}
+
+.assistant-intro {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid #2a3954;
+}
+
+.assistant-intro h2 {
+    margin: 0 0 5px;
+    font-size: 18px;
+}
+
+.assistant-intro p {
+    margin: 0;
+    color: #91a2bf;
+    font-size: 12px;
+}
+
+.assistant-avatar,
+.chat-avatar {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    border-radius: 11px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, #527cf4, #8b6cf0);
+    color: #fff;
+    font-weight: 800;
+}
+
+
+/* CHAT MESSAGES */
+
+.chat-messages {
+    height: 390px;
+    overflow-y: auto;
+    padding: 20px 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.chat-message {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    max-width: 85%;
+}
+
+.user-message {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+}
+
+.chat-bubble {
+    padding: 12px 15px;
+    border: 1px solid #2d405f;
+    border-radius: 4px 13px 13px 13px;
+    background: #17243a;
+    color: #eaf0ff;
+    line-height: 1.7;
+    font-size: 13px;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+.user-message .chat-bubble {
+    background: #263d70;
+    border-color: #405d9a;
+    border-radius: 13px 4px 13px 13px;
+}
+
+.chat-bubble p {
+    margin: 7px 0;
+}
+
+.user-message .chat-avatar {
+    background: #315b8f;
+}
+
+
+/* CHAT SUGGESTIONS */
+
+.chat-suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 0 0 15px;
+}
+
+.chat-suggestions button {
+    background: #17243a;
+    border: 1px solid #344766;
+    color: #b9c8e4;
+    border-radius: 18px;
+    padding: 8px 12px;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.chat-suggestions button:hover {
+    border-color: #8295ff;
+    color: #fff;
+}
+
+
+/* CHAT INPUT */
+
+.chat-form {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+    border: 1px solid #344766;
+    background: #101b2e;
+    border-radius: 11px;
+    padding: 10px;
+}
+
+.chat-form textarea {
+    flex: 1;
+    resize: vertical;
+    min-height: 44px;
+    max-height: 120px;
+    background: transparent;
+    border: 0;
+    outline: 0;
+    color: #eaf0ff;
+    font: inherit;
+    font-size: 13px;
+    padding: 10px;
+}
+
+.chat-form textarea::placeholder {
+    color: #7183a2;
+}
+
+.chat-form .btn {
+    white-space: nowrap;
+}
+
+.chat-status {
+    font-size: 11px;
+    color: #8295ad;
+    padding: 10px 2px 0;
+}
+
+.chat-message.typing .chat-bubble {
+    color: #9aadd0;
+    font-style: italic;
+}
+
+
+/* FORMATTED AI RESPONSE */
+
+.chat-bubble p:first-child,
+.chat-bubble h2:first-child,
+.chat-bubble h3:first-child,
+.chat-bubble h4:first-child {
+    margin-top: 0;
+}
+
+.chat-bubble h2,
+.chat-bubble h3,
+.chat-bubble h4 {
+    color: #ffffff;
+    margin: 16px 0 8px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.chat-bubble h2 {
+    font-size: 16px;
+}
+
+.chat-bubble ul,
+.chat-bubble ol {
+    padding-left: 22px;
+    margin: 8px 0 12px;
+}
+
+.chat-bubble li {
+    padding-left: 4px;
+    margin: 5px 0;
+}
+
+.chat-bubble li::marker {
+    color: #8295ff;
+}
+
+.chat-bubble strong {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.chat-bubble em {
+    color: #c5d3ff;
+}
+
+.chat-bubble code {
+    background: #0d1728;
+    border: 1px solid #344766;
+    border-radius: 4px;
+    padding: 1px 5px;
+    color: #b8c8ff;
+}
+
+.chat-bubble > :last-child {
+    margin-bottom: 0;
+}
+
+
+/* HOME PAGE AI CARD */
+
+.ai-service-card {
+    border-color: #596cbd;
+    background: linear-gradient(
+        135deg,
+        rgba(73, 93, 170, 0.18),
+        rgba(139, 108, 240, 0.10)
+    );
+}
+
+.ai-service-card > span {
+    color: #a89aff;
+}
+
+.ai-service-card:hover {
+    border-color: #9b8cff;
+    transform: translateY(-3px);
+}
+
+
+/* RESPONSIVE DESIGN */
+
+@media(max-width: 650px) {
+
+    .assistant-panel {
+        padding: 14px;
+    }
+
+    .chat-messages {
+        height: 55vh;
+    }
+
+    .chat-message {
+        max-width: 96%;
+    }
+
+    .chat-form {
+        align-items: stretch;
+    }
+
+    .chat-form .btn {
+        padding: 8px 12px;
+    }
+
+}
+
+</style>
+
+
+
+<!-- AI EXPLANATION DIALOG -->
+<dialog id="aiExplanationDialog"
+    class="ai-explanation-dialog">
+
+    <h2 id="aiExplanationTitle">
+        AI transaction explanation
+    </h2>
+
+    <p>
+        NORMETRIC AI explains the existing risk assessment;
+        it does not change the transaction score.
+    </p>
+
+    <div id="aiExplanationContent"
+        class="ai-explanation-content"
+        aria-live="polite">
+    </div>
+
+    <div id="aiExplanationStatus"
+        class="ai-explanation-status"
+        aria-live="polite">
+    </div>
+
+    <div class="ai-dialog-actions">
+
+        <button class="ai-dialog-close"
+            type="button"
+            onclick="document.getElementById('aiExplanationDialog').close()">
+            Close
+        </button>
+
+    </div>
+
+</dialog>
+
+
+<script src="/static/app.js"></script>
+
+</body>
+</html>
