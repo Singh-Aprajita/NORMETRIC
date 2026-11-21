@@ -61,3 +61,108 @@ def save_pipeline_results(batch, source, input_rows,
 
     finally:
         session.close()
+
+from sqlalchemy import func
+from .models import Transaction, PipelineRun
+
+
+def get_dashboard_data():
+    session = SessionLocal()
+
+    try:
+        counts = {
+            level: session.query(func.count(Transaction.transaction_id))
+            .filter(Transaction.risk_level == level)
+            .scalar()
+            for level in ["HIGH", "MEDIUM", "LOW"]
+        }
+
+        total = session.query(
+            func.count(Transaction.transaction_id)
+        ).scalar()
+
+        transactions = (
+            session.query(Transaction)
+            .order_by(Transaction.created_at.desc())
+            .limit(15)
+            .all()
+        )
+
+        runs = (
+            session.query(PipelineRun)
+            .order_by(PipelineRun.ran_at.desc())
+            .limit(8)
+            .all()
+        )
+
+        return {
+            "total": total,
+            "high": counts["HIGH"],
+            "medium": counts["MEDIUM"],
+            "low": counts["LOW"],
+            "transactions": [
+                {
+                    "transaction_id": t.transaction_id,
+                    "customer_id": t.customer_id,
+                    "amount": t.amount,
+                    "city": t.city,
+                    "timestamp": t.timestamp,
+                    "risk_score": t.risk_score,
+                    "risk_level": t.risk_level,
+                    "reasons": t.reasons,
+                    "decision": t.decision,
+                    "batch_id": t.batch_id,
+                    "created_at": t.created_at,
+                }
+                for t in transactions
+            ],
+            "runs": [
+                {
+                    "batch_id": r.batch_id,
+                    "source": r.source,
+                    "input_rows": r.input_rows,
+                    "valid_rows": r.valid_rows,
+                    "rejected_rows": r.rejected_rows,
+                    "duplicates": r.duplicates,
+                    "flagged": r.flagged,
+                    "status": r.status,
+                    "ran_at": r.ran_at,
+                }
+                for r in runs
+            ],
+        }
+
+    finally:
+        session.close()
+
+
+def get_transactions():
+    session = SessionLocal()
+
+    try:
+        transactions = (
+            session.query(Transaction)
+            .order_by(Transaction.created_at.desc())
+            .limit(500)
+            .all()
+        )
+
+        return [
+            {
+                "transaction_id": t.transaction_id,
+                "customer_id": t.customer_id,
+                "amount": t.amount,
+                "city": t.city,
+                "timestamp": t.timestamp,
+                "risk_score": t.risk_score,
+                "risk_level": t.risk_level,
+                "reasons": t.reasons,
+                "decision": t.decision,
+                "batch_id": t.batch_id,
+                "created_at": t.created_at,
+            }
+            for t in transactions
+        ]
+
+    finally:
+        session.close()
